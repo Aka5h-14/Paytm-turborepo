@@ -14,7 +14,7 @@ model User {
   number            String              @unique
   password          String
   verified          Boolean             @default(false)              
-  otp               Otp?                @relation(name: "otpRelation")
+  otp               Otp[]                @relation(name: "otpRelation")
   OnRampTransaction OnRampTransaction[]
   Balance           Balance[]
   sentTransfers     p2pTransfer[]       @relation(name: "FromUserRelation")
@@ -25,7 +25,7 @@ model Otp {
   id         Int      @id @default(autoincrement())
   code       String   // OTP code
   createdAt  DateTime 
-  userId     Int      @unique// Foreign key for the User relation
+  userId     Int      // Foreign key for the User relation
   user       User     @relation(name: "otpRelation",fields: [userId], references: [id])
 }
 

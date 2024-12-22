@@ -26,7 +26,6 @@ export async function createOnRampTransaction(provider: string, amount: number) 
     }
 
     try {
-        console.log(session.user.id, provider , amount )
         await prisma.$transaction(async (tx) => {
             await tx.onRampTransaction.create({
                 data: {

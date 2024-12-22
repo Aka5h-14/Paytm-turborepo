@@ -49,7 +49,7 @@ const SignIN = () => {
           className="space-y-4"
         >
           <input
-            type="text"
+            type="number"
             name="phoneNumber"
             placeholder="Phone Number"
             id="phone"

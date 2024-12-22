@@ -2,6 +2,7 @@ require('dotenv').config()
 
 import express from "express";
 import db from "@repo/db/client";
+import cron from "node-cron";
 
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -11,6 +12,8 @@ app.use(express.json())
 
 app.post("/bankWebhook", async (req, res) => {
     //TODO: Add zod validation here?
+    // zod done @ backend
+
     //TODO: HDFC bank should ideally send us a secret so we know this is sent by them
     const paymentInformation: {
         token: string;
@@ -53,79 +56,129 @@ app.post("/bankWebhook", async (req, res) => {
         })
     } catch (e) {
         console.error(e);
-        res.status(411).json({
+        res.status(200).json({
             message: "Error while processing webhook"
         })
     }
 
 })
 
-app.post("/sendEmail", async (req, res) => {
-    const userInfo: {
-        email: string;
-    } = {
-        email: req.body.email
-    };
 
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const user = await db.user.findFirst({
-        where: { email : userInfo.email }
-    })
-    if (user) {
-        const upsertOtp = await db.otp.upsert({
-            where: {
-                userId: Number(user.id),
-            },
-            update: {
-                code: otp.toString(),
-                createdAt: new Date(),
-            },
-            create: {
-                userId: Number(user.id),
-                code: otp.toString(),
-                createdAt: new Date()
-            },
-        })
-    }
-
-    const msg = {
-        to: userInfo.email,
-        from: process.env.FROM,
-        templateId: process.env.TEMPLATE_ID,
-        dynamicTemplateData: {
-            otp: otp,
-            unsubscribe: "https://example.com/unsubscribe",
-            unsubscribe_preferences: "https://example.com/preferences",
-            support_link: "https://example.com/support"
-        },
-    };
+// Route to send OTP email
+app.post("/sendEmail", async (req, res): Promise<any> => {
+    const userInfo: { email: string } = { email: req.body.email };
+    const otpLimit = 5;
 
     try {
-        await sgMail.send(msg);
-        res.json({ success: true, msg: "Template email sent successfully" })
-    } catch (error) {
-        res.json({ success: false, msg: 'Error sending template email:' })
-    }
-})
+        const user = await db.user.findFirst({
+            where: { email: userInfo.email },
+        });
 
-app.post("/validateOtp", async (req, res)=>{
-    const otp : string = req.body.otp;
-    const userEmail = req.body.email;
-
-    try{
-        const user = await db.user.findFirst({ where: { email: userEmail }, include:{otp: true} });
-        
-        const dbOtp = user?.otp?.code;
-
-        if (dbOtp === otp) {
-            const updated = await db.user.update({where: {id: user?.id}, data: { verified: true }});
-            res.status(200).json({success: true})
+        if (!user) {
+            return res.status(200).json({ success: false, msg: "User not found" });
         }
-    } catch(e){
-        res.json({success: false});
-    }
-})
 
-app.listen(3003, () => {
+        // Count OTPs created in the last 24 hours
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Start of the day
+        const otpCount = await db.otp.count({
+            where: {
+                userId: user.id,
+                createdAt: { gte: today },
+            },
+        });
+
+        if (otpCount >= otpLimit) {
+            return res.status(200).json({ success: false, msg: "OTP limit exceeded for today" });
+        }
+
+        // Create a new OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        await db.otp.create({
+            data: {
+                userId: user.id,
+                code: otp,
+                createdAt: new Date(),
+            },
+        });
+
+        const msg = {
+            to: userInfo.email,
+            from: process.env.FROM,
+            templateId: process.env.TEMPLATE_ID,
+            dynamicTemplateData: {
+                otp: otp,
+                unsubscribe: "https://example.com/unsubscribe",
+                unsubscribe_preferences: "https://example.com/preferences",
+                support_link: "https://example.com/support",
+            },
+        };
+
+        await sgMail.send(msg);
+        return res.json({ success: true, msg: "OTP sent successfully" });
+    } catch (error) {
+        console.error("Error sending OTP email:", error);
+        return res.status(200).json({ success: false, msg: "Error sending OTP email" });
+    }
+});
+
+// Route to validate OTP
+app.post("/validateOtp", async (req, res): Promise<any> => {
+    const { otp, email } = req.body;
+
+    try {
+        const user = await db.user.findFirst({
+            where: { email },
+            include: { otp: true },
+        });
+
+        if (!user) {
+            return res.status(200).json({ success: false, msg: "User not found" });
+        }
+
+        // Find the most recent OTP
+        const latestOtp = await db.otp.findFirst({
+            where: { userId: user.id },
+            orderBy: { createdAt: "desc" },
+        });
+
+        if (!latestOtp) {
+            return res.status(200).json({ success: false, msg: "No OTP found" });
+        }
+
+        if (latestOtp.code === otp) {
+            await db.user.update({
+                where: { id: user.id },
+                data: { verified: true },
+            });
+            return res.status(200).json({ success: true, msg: "OTP verified successfully" });
+        } else {
+            return res.status(200).json({ success: false, msg: "Invalid OTP" });
+        }
+    } catch (error) {
+        console.error("Error validating OTP:", error);
+        return res.status(200).json({ success: false, msg: "Error validating OTP" });
+    }
+});
+
+
+cron.schedule("0 0 * * *", async () => {
+    try {
+        const cutoffTime = new Date(Date.now() - 15 * 60 * 1000); // 15 minutes ago
+        const deleted = await db.otp.deleteMany({
+            where: {
+                createdAt: {
+                    lt: cutoffTime, // Less than the cutoff time
+                },
+            },
+        });
+        console.log(`Deleted ${deleted.count} expired OTP(s)`);
+    } catch (error) {
+        console.error("Error during OTP cleanup:", error);
+    }
+});
+
+
+app.listen(process.env.PORT || 3003, () => {
     console.log("Server is running on port 3003");
 });

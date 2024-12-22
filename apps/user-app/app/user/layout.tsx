@@ -10,9 +10,9 @@ export default function Layout({
         <div className="w-52 lg:w-72 border-r border-slate-300 min-h-screen lg:mr-4 pt-28">
             <div>
                 <SidebarItem href={"/user/dashboard"} icon={<HomeIcon />} title="Home" />
-                <SidebarItem href={"/user/transfer"} icon={<TransferIcon />} title="Transfer" />
                 <SidebarItem href={"/user/transaction"} icon={<TransactionsIcon />} title="Transactions" />
-                <SidebarItem href={"/user/p2p"} icon={< P2PTransferIcon/>} title="P2P" />
+                <SidebarItem href={"/user/transfer"} icon={<TransferIcon />} title="Transfer" />
+                <SidebarItem href={"/user/p2p"} icon={< P2PTransferIcon/>} title="P2P Transfer" />
             </div>
         </div>
             {children}

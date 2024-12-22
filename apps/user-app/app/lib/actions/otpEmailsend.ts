@@ -11,6 +11,7 @@ interface EmailResponse {
 
 interface ValidateOtpResponse {
   success: boolean;
+  msg: string;
 }
 
 export async function otpEmailSend() {

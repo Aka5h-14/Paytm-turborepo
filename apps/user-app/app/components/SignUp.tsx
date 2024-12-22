@@ -86,7 +86,7 @@ const SignUP = () => {
           />
 
           <input
-            type="text"
+            type="number"
             name="phone"
             placeholder="Phone Number"
             ref={phoneRef}

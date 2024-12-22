@@ -54,6 +54,7 @@ export const AddMoney = () => {
             onClick={async () => {
               await createOnRampTransaction(provider, value);
               window.location.href = redirectUrl || "";
+              // window.open(redirectUrl || "")
             }}
           >
             Add Money
