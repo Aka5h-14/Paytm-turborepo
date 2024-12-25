@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const SECRET = process.env.JWT_SECRET || "secret";
-const Public_path = ['/_next', '/favicon.ico']
+const Public_path = ['/_next', '/favicon.ico', '/api/auth']
 
 export default async function middleware(req: NextRequest) {
 
@@ -13,10 +13,6 @@ export default async function middleware(req: NextRequest) {
     }
 
     // console.log("\n" + pathname );
-
-    if(pathname.startsWith("/api/auth")){
-        return NextResponse.next();
-    }
 
     const token = await getToken({ req, secret: SECRET });
 
@@ -39,7 +35,7 @@ export default async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL("/signup/signupverify", req.url));
         }
         else{
-            if(pathname=="/api/auth/signin" || pathname=="/signup"){
+            if(pathname=="/api/auth/signin" || pathname.startsWith("/signup")){
                 return NextResponse.redirect(new URL("/", req.url));
             }
             return NextResponse.next();

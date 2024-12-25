@@ -18,13 +18,13 @@ export async function otpEmailSend() {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user.email ) {
+    if (!session || !session.user.id ) {
         console.log("send session "+JSON.stringify(session?.user))
       throw new Error("User session is not valid.");
     }
 
     const res: AxiosResponse<EmailResponse> = await axios.post("http://localhost:3003/sendEmail", {
-      email: session.user.email
+      id: session.user.id
     });
 
     return res.data; 
@@ -38,13 +38,13 @@ export async function otpEmailValidate(otp: string) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session  || !session.user.email) {
+    if (!session  || !session.user.id) {
       throw new Error("User session is not valid.");
     }
 
     const res: AxiosResponse<ValidateOtpResponse> = await axios.post("http://localhost:3003/validateOtp", {
       otp: otp,
-      email: session.user.email,
+      id: session.user.id,
     });
 
     return res.data; 

@@ -1,17 +1,8 @@
 "use client";
 
-// type SignUpProps = {
-//   signUpAction: (params: {
-//     email: string;
-//     password: string;
-//     phone: string;
-//     name: string;
-//   }) => any;
-// };
-
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { signUpAction } from "../lib/actions/signUpAction";
 
 const SignUP = () => {
@@ -20,6 +11,7 @@ const SignUP = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async () => {
@@ -31,24 +23,16 @@ const SignUP = () => {
         password: passwordRef.current?.value || "",
       };
 
-      // Call the server action
       const result = await signUpAction(userData);
-      console.log(JSON.stringify(result)) 
 
       if (result.success) {
         const signInResult = await signIn("credentials", {
           phone: userData.phone,
           password: userData.password,
-          redirect: false,
+          redirect: true,
         });
-        if (signInResult?.ok) {
-          router.push("/");
-        } else {
-          console.log("sign in failed");
-        }
       } else {
-        console.log(result?.error);
-        return result?.error;
+        console.log(result.error);
       }
     } catch (error) {
       router.push("/signup");

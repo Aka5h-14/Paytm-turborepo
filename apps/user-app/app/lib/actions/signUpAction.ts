@@ -19,7 +19,7 @@ export async function signUpAction({
     //zod validation
     const typeCheck = signUpInputs.safeParse({ name, phone, email, password });
     if (!typeCheck.success) {
-        return { success: false, error: typeCheck.error };
+        return { success: false, error: typeCheck.error.errors };
     }
 
     try {

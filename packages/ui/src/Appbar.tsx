@@ -1,21 +1,22 @@
 import { Button } from "./button";
-// import { useHamburger , useSetHamburger } from "@repo/store/hamburger";
 
 interface AppbarProps {
   user?: { name?: string | null };
   onSignin: () => void;
   onSignout: () => void;
+  // hamburger: boolean ;
+  // setHamburger: (value: boolean) => void;
 }
 
-export const Appbar = ({ user, onSignin, onSignout }: AppbarProps) => {
-    // const isOpen = useHamburger();
-    // const setHamburger = useSetHamburger();
+export const Appbar = ({ user, onSignin, onSignout 
+  // , hamburger , setHamburger 
+
+}: AppbarProps) => {
   return (
     <div className="flex justify-between items-center border-b px-4 py-2">
-      {/* Hamburger Button */}
       <button
         className="sm:hidden p-2 bg-gray-100 rounded-md shadow-md"
-        onClick={() => {}}
+        // onClick={() => {setHamburger(true)}}
       >
         <HamburgerIcon />
       </button>

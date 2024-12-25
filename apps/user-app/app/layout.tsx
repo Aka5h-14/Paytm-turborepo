@@ -7,7 +7,7 @@ import { AppbarClient } from "./components/AppbarClient";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Wallet",
+  title: "Paytm User",
   description: "Simple wallet app",
 };
 
@@ -16,11 +16,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }): JSX.Element {
+
+
+
   return (
     <html lang="en">
       <Providers>
         <body>
-        <AppbarClient />
+        <AppbarClient/>
           <div className={inter.className}>
             {children}
           </div>

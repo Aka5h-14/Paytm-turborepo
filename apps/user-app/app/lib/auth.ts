@@ -29,10 +29,9 @@ export const authOptions:  NextAuthOptions = {
                 verified: existingUser.verified,
               }
           }
-          return null;
+          throw new Error("InvalidCreadentials");
         }
-
-        return null
+        throw new Error("InvalidCreadentials");
       },
     })
   ],
@@ -41,31 +40,44 @@ export const authOptions:  NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, trigger, user, session }: any) {
+      // Handle token update when session is triggered with "update"
+      if (trigger === "update" && session?.verified !== undefined) {
+        token.verified = session.verified;
+      }
+  
+      // Handle token generation for the authenticated user
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
         token.verified = user.verified;
       }
+  
+      // Always return the token
       return token;
     },
     async session({ token, session }) {
       if (token) {
-        if (token.verified) {
           session.user = {
             id: Number(token.id),
             name: token.name,
             email: token.email,
             verified: token.verified,
           };
-        }
       }
       return session;
     },
+    async redirect({ url, baseUrl, token }: any) {
+      if (token?.verified) {
+        return `${baseUrl}/`; // Redirect to home if verified
+      } else {
+        return `${baseUrl}/signup/signupverify`; // Redirect to verification page if not verified
+      }
+    },
   },  
   pages: {
-    signIn: "/auth/signin", // Optional: Custom sign-in page if needed
-    error: "/auth/error"
+    signIn: "/auth/signin",
+    error: "/auth/error",
   },
 };

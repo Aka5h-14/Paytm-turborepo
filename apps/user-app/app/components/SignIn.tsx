@@ -24,14 +24,10 @@ const SignIN = () => {
     }
 
     const result = await signIn("credentials", {
+      redirect: true,
       phone: phoneNum,
       password: password,
-      redirect: false,
     });
-
-    if (result?.ok) {
-      router.push("/");
-    }
   };
 
   return (

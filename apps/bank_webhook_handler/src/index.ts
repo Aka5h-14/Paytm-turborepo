@@ -66,12 +66,12 @@ app.post("/bankWebhook", async (req, res) => {
 
 // Route to send OTP email
 app.post("/sendEmail", async (req, res): Promise<any> => {
-    const userInfo: { email: string } = { email: req.body.email };
+    const id: number = req.body.id;
     const otpLimit = 5;
 
     try {
         const user = await db.user.findFirst({
-            where: { email: userInfo.email },
+            where: { id: id },
         });
 
         if (!user) {
@@ -83,7 +83,7 @@ app.post("/sendEmail", async (req, res): Promise<any> => {
         today.setHours(0, 0, 0, 0); // Start of the day
         const otpCount = await db.otp.count({
             where: {
-                userId: user.id,
+                userId: id,
                 createdAt: { gte: today },
             },
         });
@@ -96,14 +96,14 @@ app.post("/sendEmail", async (req, res): Promise<any> => {
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         await db.otp.create({
             data: {
-                userId: user.id,
+                userId: id,
                 code: otp,
                 createdAt: new Date(),
             },
         });
 
         const msg = {
-            to: userInfo.email,
+            to: user.email,
             from: process.env.FROM,
             templateId: process.env.TEMPLATE_ID,
             dynamicTemplateData: {
@@ -124,11 +124,11 @@ app.post("/sendEmail", async (req, res): Promise<any> => {
 
 // Route to validate OTP
 app.post("/validateOtp", async (req, res): Promise<any> => {
-    const { otp, email } = req.body;
+    const { otp, id }:{otp:string, id:number} = req.body;
 
     try {
         const user = await db.user.findFirst({
-            where: { email },
+            where: { id: id },
             include: { otp: true },
         });
 
@@ -138,7 +138,7 @@ app.post("/validateOtp", async (req, res): Promise<any> => {
 
         // Find the most recent OTP
         const latestOtp = await db.otp.findFirst({
-            where: { userId: user.id },
+            where: { userId: id},
             orderBy: { createdAt: "desc" },
         });
 
@@ -148,7 +148,7 @@ app.post("/validateOtp", async (req, res): Promise<any> => {
 
         if (latestOtp.code === otp) {
             await db.user.update({
-                where: { id: user.id },
+                where: { id: id },
                 data: { verified: true },
             });
             return res.status(200).json({ success: true, msg: "OTP verified successfully" });

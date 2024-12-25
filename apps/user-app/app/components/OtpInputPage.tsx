@@ -3,22 +3,22 @@
 import { useState, useRef, KeyboardEvent, ClipboardEvent } from "react";
 import { otpEmailSend, otpEmailValidate } from "../lib/actions/otpEmailsend";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const OtpInput = () => {
   const [otp, setOtp] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showOtpInput, setShowOtpInput] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
+  const { data: session, update } = useSession()
+  const email = session?.user?.email;
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Add your email sending logic here
       // await sendOtpEmail(email);
       const res = await otpEmailSend();
       alert(res.msg);
@@ -82,7 +82,9 @@ const OtpInput = () => {
       if (res.success) {
         setIsSubmitted(true);
         alert(res.msg);
-        await signOut({ redirect: false });
+        await update({verified: true})
+        // const session = await getServerSession();
+        // await signOut({ redirect: false });
         router.push("/");
       } else {
         console.error("Invalid OTP. Please try again.");
@@ -104,7 +106,7 @@ const OtpInput = () => {
             <h2 className="text-xl md:text-2xl font-semibold text-center text-gray-700 mb-3">
               Verify Email
             </h2>
-            <span className="text-sm ext-gray-600 mb-6">{email}</span>
+            <p className="text-sm text-center text-gray-600 mb-6">{email}</p>
 
             <form onSubmit={handleEmailSubmit} className="space-y-6">
               <button

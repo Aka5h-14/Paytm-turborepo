@@ -1,7 +1,7 @@
-// import { atom } from "recoil";
+import { atom } from "recoil";
 
-// export const hamburgerAtom = atom<boolean>({
-//     key: "hamburgerAtom",
-//     default: false,
-// }) 
+export const hamburgerAtom = atom<boolean>({
+    key: "hamburgerAtom",
+    default: false,
+}) 
 
