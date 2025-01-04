@@ -2,16 +2,19 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Appbar } from "@repo/ui/appbar";
 import { useRouter } from "next/navigation";
-import { useHamburger } from "@repo/store/hamburger";
+import { changeLoading } from "@repo/store/LoadingSlice";
+import { useDispatch } from "react-redux";
 
 export function AppbarClient() {
   const { data: session } = useSession();
-  // const { hamburger, setHamburger } = useHamburger();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSignOut = async () => {
+    dispatch(changeLoading());
     await signOut({ redirect: false });
-    router.push("/api/auth/signin"); // Manually redirect after signing out
+    router.push("/api/auth/signin");
+    dispatch(changeLoading());
   }; 
 
   return (
@@ -19,8 +22,6 @@ export function AppbarClient() {
       onSignin={signIn}
       onSignout={handleSignOut}
       user={session?.user}
-      // hamburger={hamburger}
-      // setHamburger={setHamburger}
     />
   );
 }

@@ -1,22 +1,25 @@
 import { Button } from "./button";
+import { click } from "@repo/store/HamburgerSlice";
+import { useAppDispatch, useAppSelector } from "@repo/store/hooks";
 
 interface AppbarProps {
   user?: { name?: string | null };
   onSignin: () => void;
   onSignout: () => void;
-  // hamburger: boolean ;
-  // setHamburger: (value: boolean) => void;
 }
 
-export const Appbar = ({ user, onSignin, onSignout 
-  // , hamburger , setHamburger 
-
+export const Appbar = ({ 
+  user, onSignin, onSignout 
 }: AppbarProps) => {
+
+  const hamburger = useAppSelector((state) => state.hamburger.value);
+  const dispatch = useAppDispatch(); 
+
   return (
     <div className="flex justify-between items-center border-b px-4 py-2">
       <button
         className="sm:hidden p-2 bg-gray-100 rounded-md shadow-md"
-        // onClick={() => {setHamburger(true)}}
+        onClick={() => {dispatch(click())}}
       >
         <HamburgerIcon />
       </button>

@@ -19,11 +19,6 @@ export async function createOnRampTransaction(provider: string, amount: number) 
     const token = randomUUID();
 
     //zod
-    const typeCheck = onRampInputs.safeParse({ provider, amount });
-    if (!typeCheck.success) {
-        console.log(typeCheck.error);
-        return typeCheck.error;
-    }
 
     try {
         await prisma.$transaction(async (tx) => {
@@ -44,21 +39,24 @@ export async function createOnRampTransaction(provider: string, amount: number) 
             });
         })
     } catch (error: any) {
+        console.log(error);
         throw new Error(error.message);
     }
 
     try {
-        await new Promise(resolve => setTimeout(resolve, 30000));
-        axios.post("http://localhost:3003/bankWebhook", {
+        setTimeout(() => {
+            axios.post("http://localhost:3003/bankWebhook", {
 
-            token,
-            user_identifier: Number(session?.user?.id),
-            amount: amount * 100
-
-        })
+                token,
+                user_identifier: Number(session?.user?.id),
+                amount: amount * 100
+    
+            })
+        },20000);
     }
-    catch (e) {
+    catch (e: any) {
         console.log(e);
+        throw new Error(e.message);
     }
 
     return {

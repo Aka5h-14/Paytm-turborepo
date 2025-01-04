@@ -18,8 +18,7 @@ export default async function middleware(req: NextRequest) {
 
     if(!token){
         // new user
-        if(pathname=="/api/auth/signin" || pathname=="/signup"){
-            console.log("no token came to signin  middleware")
+        if(pathname=="/api/auth/signin" || pathname=="/signup" || pathname=="/forgotPass"){
             return NextResponse.next();
         }
         return NextResponse.redirect(new URL("/api/auth/signin", req.url));
@@ -35,7 +34,7 @@ export default async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL("/signup/signupverify", req.url));
         }
         else{
-            if(pathname=="/api/auth/signin" || pathname.startsWith("/signup")){
+            if(pathname=="/api/auth/signin" || pathname.startsWith("/signup") || pathname.startsWith("/forgotPass")){
                 return NextResponse.redirect(new URL("/", req.url));
             }
             return NextResponse.next();

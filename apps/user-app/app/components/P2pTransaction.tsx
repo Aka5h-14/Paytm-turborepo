@@ -22,20 +22,23 @@ export const P2pTransaction = ({
   return (
     <Card title="All Transactions">
       <div className="pt-2">
-        {transactions.map((t) => (
-          <div className="flex justify-between py-1">
+        {transactions.map((t, index) => (
+          <div
+            className="flex justify-between py-1"
+            key={t.time.toISOString() + index}
+          >
             <div>
               <div className="text-sm">
-                {t.status == "Received"
+                {t.status === "Received"
                   ? `Received INR From (${t.receiver})`
                   : `Sent INR To (${t.sentTo})`}
               </div>
               <div className="text-slate-600 text-xs">
-                {t.time.toDateString()}
+                {new Date(t.time).toDateString()}
               </div>
             </div>
             <div className="flex flex-col justify-center">
-              {t.status == "Received" ? "+" : "-"} Rs {t.amount / 100}
+              {t.status === "Received" ? "+" : "-"} Rs {t.amount / 100}
             </div>
           </div>
         ))}

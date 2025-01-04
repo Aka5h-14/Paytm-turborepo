@@ -1,5 +1,7 @@
-export default function ForgotPass(){
+import ForgotPass from "../components/ForgotPass";
+
+export default function ForgotPassPage(){
     return <div>
-        forgot pass page need verification first
+        <ForgotPass/>
     </div>
 }

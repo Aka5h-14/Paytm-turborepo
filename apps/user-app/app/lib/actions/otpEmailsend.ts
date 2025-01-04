@@ -3,13 +3,9 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 import axios, { AxiosResponse } from "axios";
+const bcrypt = require("bcryptjs")
 
-interface EmailResponse {
-  success: boolean;
-  msg: string;
-}
-
-interface ValidateOtpResponse {
+interface ApiResponse {
   success: boolean;
   msg: string;
 }
@@ -23,7 +19,7 @@ export async function otpEmailSend() {
       throw new Error("User session is not valid.");
     }
 
-    const res: AxiosResponse<EmailResponse> = await axios.post("http://localhost:3003/sendEmail", {
+    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/sendEmail", {
       id: session.user.id
     });
 
@@ -42,7 +38,7 @@ export async function otpEmailValidate(otp: string) {
       throw new Error("User session is not valid.");
     }
 
-    const res: AxiosResponse<ValidateOtpResponse> = await axios.post("http://localhost:3003/validateOtp", {
+    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/validateOtp", {
       otp: otp,
       id: session.user.id,
     });
@@ -54,3 +50,43 @@ export async function otpEmailValidate(otp: string) {
   }
 }
 
+export async function otpEmailSendPass(email : string) {
+  try {
+
+    if (!email ) {
+        console.log("No email provided")
+      throw new Error("No email provided.");
+    }
+
+    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/sendEmailPass", {
+      email: email
+    });
+
+    return res.data; 
+  } catch (error) {
+    console.error("Error sending OTP email for Pass:", error);
+    throw error;
+  }
+}
+
+export async function otpEmailValidatePass(otp: string , email : string , password : string) {
+  try {
+
+    if (!email  || !password) {
+      throw new Error("Invalid email or password.");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/validateOtpPass", {
+      otp: otp,
+      email: email,
+      password: hashedPassword
+    });
+
+    return res.data; 
+  } catch (error) {
+    console.error("Error validating OTP:", error);
+    throw error;
+  }
+}

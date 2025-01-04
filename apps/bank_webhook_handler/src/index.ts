@@ -161,8 +161,106 @@ app.post("/validateOtp", async (req, res): Promise<any> => {
     }
 });
 
+// Route to send OTP email for password reset
+app.post("/sendEmailPass", async (req, res): Promise<any> => {
+    const email: string = req.body.email;
+    const otpLimit = 5;
 
-cron.schedule("0 0 * * *", async () => {
+    try {
+        const user = await db.user.findFirst({
+            where: { email: email },
+        });
+
+        if (!user) {
+            return res.status(200).json({ success: false, msg: "User not found" });
+        }
+
+        // Count OTPs created in the last 24 hours
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Start of the day
+        const otpCount = await db.otp.count({
+            where: {
+                userId: user.id,
+                createdAt: { gte: today },
+            },
+        });
+
+        if (otpCount >= otpLimit) {
+            return res.status(200).json({ success: false, msg: "OTP limit exceeded for today" });
+        }
+
+        // Create a new OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        await db.otp.create({
+            data: {
+                userId: user.id,
+                code: otp,
+                createdAt: new Date(),
+            },
+        });
+
+        const msg = {
+            to: email,
+            from: process.env.FROM,
+            templateId: process.env.TEMPLATE_ID,
+            dynamicTemplateData: {
+                otp: otp,
+                unsubscribe: "https://example.com/unsubscribe",
+                unsubscribe_preferences: "https://example.com/preferences",
+                support_link: "https://example.com/support",
+            },
+        };
+
+        await sgMail.send(msg);
+
+        return res.json({ success: true, msg: "OTP sent successfully" });
+    } catch (error) {
+        console.error("Error sending OTP email Pass:", error);
+        return res.status(200).json({ success: false, msg: "Error sending OTP email" });
+    }
+});
+
+// Route to validate OTP password
+app.post("/validateOtpPass", async (req, res): Promise<any> => {
+    const { otp, email , password }:{otp:string, email:string , password:string} = req.body;
+
+    try {
+        const user = await db.user.findFirst({
+            where: { email: email },
+            include: { otp: true },
+        });
+
+        if (!user) {
+            return res.status(200).json({ success: false, msg: "User not found" });
+        }
+
+        // Find the most recent OTP
+        const latestOtp = await db.otp.findFirst({
+            where: { userId: user.id},
+            orderBy: { createdAt: "desc" },
+        });
+
+        if (!latestOtp) {
+            return res.status(200).json({ success: false, msg: "No OTP found" });
+        }
+
+        if (latestOtp.code === otp) {
+            await db.user.update({
+                where: { id: user.id },
+                data: { password: password },
+            });
+            return res.status(200).json({ success: true, msg: "Password changed successfully" });
+        } else {
+            return res.status(200).json({ success: false, msg: "Invalid OTP" });
+        }
+    } catch (error) {
+        console.error("Error validating OTP:", error);
+        return res.status(200).json({ success: false, msg: "Error changing Password" });
+    }
+});
+
+
+cron.schedule("0 0 * * *", async () => { // run everyday at 12am
     try {
         const cutoffTime = new Date(Date.now() - 15 * 60 * 1000); // 15 minutes ago
         const deleted = await db.otp.deleteMany({

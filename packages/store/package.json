@@ -1,12 +1,20 @@
 {
   "name": "@repo/store",
   "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "recoil": "^0.7.7"
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "exports": {
-    "./balance": "./src/hooks/useBalance.ts",
-    "./hamburger": "./src/hooks/useHamburger.ts"
-  }
+      "./store": "./redux/store.ts",
+      "./hooks": "./redux/hooks/index.ts",
+      "./CounterSlice": "./redux/slices/counter/index.ts",
+      "./HamburgerSlice": "./redux/slices/hamburger/index.ts",
+      "./LoadingSlice": "./redux/slices/loading/index.ts",
+      "./ErrorSlice": "./redux/slices/errorState/index.ts"
+    },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

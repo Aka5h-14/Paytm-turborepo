@@ -59,36 +59,35 @@ export const UserDashboard = ({
   return (
     
     <div>
-      <div className="p-8 w-full bg-gray-50 min-h-screen">
-        <h1 className="text-3xl font-bold mb-6 text-blue-600"></h1>
+      <div className="p-2 sm:p-8 w-full bg-gray-50 min-h-screen">
 
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white shadow rounded-lg p-2 sm:p-6">
           <h2 className="text-xl text-[#6a51a6] font-semibold mb-4">User Overview</h2>
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-sm sm:text-base">
             <strong>Name:</strong> {user.name}
           </p>
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-sm sm:text-base">
             <strong>Email:</strong> {user.email}
           </p>
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-sm sm:text-base">
             <strong>Number:</strong> {user.number}
           </p>
 
           <div className="mt-6">
             <h3 className="text-lg font-semibold">Balance</h3>
-            <p className="text-gray-700">
+            <p className="text-gray-700 text-sm sm:text-base">
               <strong>Total Balance:</strong> ₹
               {user.Balance[0]?.amount ? user.Balance[0]?.amount / 100 : 0}
             </p>
-            <p className="text-gray-700">
+            <p className="text-gray-700 text-sm sm:text-base">
               <strong>Locked Balance:</strong> ₹{user.Balance[0]?.locked}
             </p>
           </div>
         </div>
 
-        <div className="mt-6 overflow-x-auto bg-white shadow rounded-lg p-6">
+        <div className="mt-6 overflow-x-auto bg-white shadow rounded-lg p-2 sm:p-6">
           <h3 className="text-xl text-[#6a51a6] font-semibold mb-4">OnRamp Transactions</h3>
-          <table className="table-auto w-full border-collapse border border-gray-200">
+          <table className="table-auto w-full border-collapse border border-gray-200 text-sm sm:text-base">
             <thead>
               <tr className="bg-gray-100 text-left">
                 <th className="border border-gray-200 p-2">Provider</th>
@@ -114,11 +113,11 @@ export const UserDashboard = ({
           </table>
         </div>
 
-        <div className="mt-6 overflow-x-auto bg-white shadow rounded-lg p-6">
+        <div className="mt-6 overflow-x-auto bg-white shadow rounded-lg p-2 sm:p-6">
           <h3 className="text-xl text-[#6a51a6] font-semibold mb-4">P2P Transfers</h3>
 
           <h4 className="text-lg  font-medium mb-2">Sent Transfers</h4>
-          <table className="table-auto w-full border-collapse border border-gray-200 mb-6">
+          <table className="table-auto w-full border-collapse border border-gray-200 mb-6 text-sm sm:text-base">
             <thead>
               <tr className="bg-gray-100 text-left">
                 <th className="border border-gray-200 p-2">Amount</th>
@@ -142,7 +141,7 @@ export const UserDashboard = ({
           </table>
 
           <h4 className="text-lg overflow-x-auto font-medium mb-2">Received Transfers</h4>
-          <table className="table-auto w-full border-collapse border border-gray-200">
+          <table className="table-auto w-full border-collapse border border-gray-200 text-sm sm:text-base">
             <thead>
               <tr className="bg-gray-100 text-left">
                 <th className="border border-gray-200 p-2">Amount</th>

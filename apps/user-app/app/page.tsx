@@ -1,17 +1,17 @@
-import { getServerSession } from "next-auth";
-import { redirect } from 'next/navigation'
-import { authOptions } from "./lib/auth";
+"use client";
+import { increment } from "@repo/store/CounterSlice";
+import { useAppDispatch, useAppSelector } from "@repo/store/hooks";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  // const session = await getServerSession(authOptions);
-  // if (session?.user) {
-    // if(session?.user?.verified){
-    //   redirect('/user/dashboard')
-    // }
-  // } else {
+
     redirect('/user/dashboard')
-  // }
+
+  // const count = useAppSelector((state) => state.counter.value);
+  // const dispatch = useAppDispatch();
   return <div>
-    welcome to paytm
+    Welcome to paytm
+    {/* count is {count}
+    <button className="border-2" onClick={()=>{ dispatch(increment())}}>increment</button> */}
   </div>
 }

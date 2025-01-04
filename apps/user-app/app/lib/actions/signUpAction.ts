@@ -1,7 +1,6 @@
 "use server";
 
 import prisma from "@repo/db/client";
-import { signUpInputs } from "@repo/zodtypes/types";
 const bcrypt = require("bcryptjs")
 
 
@@ -16,11 +15,6 @@ export async function signUpAction({
     email: string;
     password: string;
 }): Promise<{success:boolean , error?: any}> {
-    //zod validation
-    const typeCheck = signUpInputs.safeParse({ name, phone, email, password });
-    if (!typeCheck.success) {
-        return { success: false, error: typeCheck.error.errors };
-    }
 
     try {
         const existingUser = await prisma.user.findUnique({

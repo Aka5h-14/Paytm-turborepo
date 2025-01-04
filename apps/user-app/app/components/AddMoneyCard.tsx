@@ -5,6 +5,10 @@ import { Select } from "@repo/ui/select";
 import { useState } from "react";
 import { TextInput } from "@repo/ui/textInput";
 import { createOnRampTransaction } from "../lib/actions/createOnrampTransaction";
+import { Center } from "@repo/ui/center";
+import { onRampInputs } from "@repo/zodtypes/types";
+import { useAppDispatch } from "@repo/store/hooks";
+import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 
 const SUPPORTED_BANKS = [
   {
@@ -13,7 +17,7 @@ const SUPPORTED_BANKS = [
   },
   {
     name: "Axis Bank",
-    redirectUrl: "https://www.axisbank.com/",
+    redirectUrl: "https://omni.axisbank.co.in/axisretailbanking/",
   },
 ];
 
@@ -23,44 +27,62 @@ export const AddMoney = () => {
   );
   const [provider, setProvider] = useState(SUPPORTED_BANKS[0]?.name || "");
   const [value, setValue] = useState(0);
+  const dispatch = useAppDispatch();
 
   return (
-    <Card title="Add Money">
-      <div className="w-full">
-        <TextInput
-          label={"Amount"}
-          placeholder={"Amount"}
-          onChange={(val) => {
-            setValue(Number(val));
-          }}
-        />
-        <div className="py-4 text-left">Bank</div>
-        <Select
-          onSelect={(value) => {
-            setRedirectUrl(
-              SUPPORTED_BANKS.find((x) => x.name === value)?.redirectUrl || ""
-            );
-            setProvider(
-              SUPPORTED_BANKS.find((x) => x.name === value)?.name || ""
-            );
-          }}
-          options={SUPPORTED_BANKS.map((x) => ({
-            key: x.name,
-            value: x.name,
-          }))}
-        />
-        <div className="flex justify-center pt-4">
-          <Button
-            onClick={async () => {
-              await createOnRampTransaction(provider, value);
-              window.location.href = redirectUrl || "";
-              // window.open(redirectUrl || "")
+    <Center>
+      <Card title="Add Money">
+        <div className="w-full">
+          <TextInput
+          type="number"
+            label={"Amount"}
+            placeholder={"Amount"}
+            onChange={(val) => {
+              setValue(Number(val));
             }}
-          >
-            Add Money
-          </Button>
+          />
+          <div className="py-4 text-left">Bank</div>
+          <Select
+            onSelect={(value) => {
+              setRedirectUrl(
+                SUPPORTED_BANKS.find((x) => x.name === value)?.redirectUrl || ""
+              );
+              setProvider(
+                SUPPORTED_BANKS.find((x) => x.name === value)?.name || ""
+              );
+            }}
+            options={SUPPORTED_BANKS.map((x) => ({
+              key: x.name,
+              value: x.name,
+            }))}
+          />
+          <div className="flex justify-center pt-4">
+            <Button
+              onClick={async () => {
+                const typeCheck = onRampInputs.safeParse({
+                  provider,
+                  amount: Number(value) * 100,
+                });
+                if (!typeCheck.success) {
+                  dispatch(errorTrue());
+                  const errorMessage =
+                    typeCheck.error?.errors[0]?.message || "An error occurred";
+                  dispatch(setMessage(errorMessage));
+                  dispatch(setSeverity("warning"));
+                  return;
+                }
+                await createOnRampTransaction(provider, value);
+                if (redirectUrl) {
+                  window.open(redirectUrl, "_blank");
+                }
+                window.location.href = window.location.href;
+              }}
+            >
+              Add Money
+            </Button>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </Center>
   );
 };

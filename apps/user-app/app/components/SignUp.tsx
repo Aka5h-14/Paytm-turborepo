@@ -2,19 +2,26 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { signUpAction } from "../lib/actions/signUpAction";
+import { changeLoading } from "@repo/store/LoadingSlice";
+import { useAppDispatch } from "@repo/store/hooks";
+import { signUpInputs } from "@repo/zodtypes/types";
+import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 
 const SignUP = () => {
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
+  
   const nameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
-
-  const [showPassword, setShowPassword] = useState(false);
-
+  
   const handleSignUp = async () => {
+
+    dispatch(changeLoading());
     try {
       const userData = {
         name: nameRef.current?.value || "",
@@ -22,6 +29,17 @@ const SignUP = () => {
         email: emailRef.current?.value || "",
         password: passwordRef.current?.value || "",
       };
+
+      const typeCheck = signUpInputs.safeParse(userData);
+      if (!typeCheck.success) {
+        dispatch(changeLoading());
+        dispatch(errorTrue());
+        const errorMessage =
+          typeCheck.error?.errors[0]?.message || "An error occurred";
+        dispatch(setMessage(errorMessage));
+        dispatch(setSeverity("warning"));
+        return;
+      }
 
       const result = await signUpAction(userData);
 
@@ -31,10 +49,15 @@ const SignUP = () => {
           password: userData.password,
           redirect: true,
         });
+        dispatch(changeLoading());
       } else {
-        console.log(result.error);
+        dispatch(errorTrue());
+        dispatch(setMessage(result.error));
+        dispatch(setSeverity("error"));
+        dispatch(changeLoading());
       }
     } catch (error) {
+      dispatch(changeLoading());
       router.push("/signup");
       if (error instanceof Error) {
         console.error("Error signing in:", error.message);

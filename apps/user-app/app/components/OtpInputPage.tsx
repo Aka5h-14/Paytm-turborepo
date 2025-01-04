@@ -4,29 +4,47 @@ import { useState, useRef, KeyboardEvent, ClipboardEvent } from "react";
 import { otpEmailSend, otpEmailValidate } from "../lib/actions/otpEmailsend";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useAppDispatch } from "@repo/store/hooks";
+import { changeLoading } from "@repo/store/LoadingSlice";
+import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 
 const OtpInput = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { data: session, update } = useSession();
+
   const [otp, setOtp] = useState<string>("");
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showOtpInput, setShowOtpInput] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const router = useRouter();
-  const { data: session, update } = useSession()
+
   const email = session?.user?.email;
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // await sendOtpEmail(email);
+      // sendOtpEmail(email)
+      dispatch(changeLoading());
       const res = await otpEmailSend();
-      alert(res.msg);
       if (res.success) {
+        dispatch(changeLoading());
+        dispatch(errorTrue());
+        dispatch(setMessage(res.msg));
+        dispatch(setSeverity("success"));
         setShowOtpInput(true);
+      } else {
+        dispatch(changeLoading());
+        dispatch(errorTrue());
+        dispatch(setMessage(res.msg));
+        dispatch(setSeverity("warning"));
       }
     } catch (error) {
-      console.error("Failed to send OTP:", error);
+      dispatch(changeLoading());
+      dispatch(errorTrue());
+      dispatch(setMessage("An error occurred"));
+      dispatch(setSeverity("error"));
+      console.error("Error while sending OTP:",error);
     } finally {
       setLoading(false);
     }
@@ -71,28 +89,36 @@ const OtpInput = () => {
     e.preventDefault();
 
     if (otp.length !== 6) {
-      console.log("Please enter a valid 6-digit OTP");
+      dispatch(errorTrue());
+      dispatch(setMessage("Please enter a valid 6-digit OTP"));
+      dispatch(setSeverity("warning"));
       return;
     }
 
     try {
+      dispatch(changeLoading());
       setLoading(true);
       const res = await otpEmailValidate(otp);
 
       if (res.success) {
-        setIsSubmitted(true);
-        alert(res.msg);
-        await update({verified: true})
-        // const session = await getServerSession();
-        // await signOut({ redirect: false });
+        dispatch(changeLoading());
+        dispatch(errorTrue());
+        dispatch(setMessage(res.msg));
+        dispatch(setSeverity("success"));
+        await update({ verified: true });
         router.push("/");
       } else {
-        console.error("Invalid OTP. Please try again.");
-        alert(res.msg);
+        dispatch(changeLoading());
+        dispatch(errorTrue());
+        dispatch(setMessage(res.msg));
+        dispatch(setSeverity("warning"));
       }
     } catch (error) {
+      dispatch(changeLoading());
+      dispatch(errorTrue());
+      dispatch(setMessage("Something went wrong. Please try again."));
+      dispatch(setSeverity("error"));
       console.error("Error while verifying OTP:", error);
-      alert("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -148,11 +174,6 @@ const OtpInput = () => {
               >
                 {loading ? "Validating.." : "Verify OTP"}
               </button>
-              {isSubmitted && (
-                <p className="text-center text-green-600 mt-4">
-                  OTP verified successfully!
-                </p>
-              )}
             </form>
             <div className="mt-6 text-center text-sm text-gray-600">
               Check Spam and Junk folders

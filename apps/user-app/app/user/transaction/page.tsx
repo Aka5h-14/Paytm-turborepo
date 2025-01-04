@@ -62,12 +62,12 @@ export default async function () {
   const transaction = await getAllTxns();
 
   return (
-    <div className="w-screen">
-      <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
+    <div className="w-full">
+      <div className="text-3xl sm:text-4xl text-[#6a51a6] pt-4 sm:pt-8 mb-2 sm:mb-4 pl-4 font-bold ">
         All Transactions
       </div>
-      <div className="w-full grid grid-cols-1 p-4">
-        <div className="pt-4">
+      <div className="w-full grid grid-cols-1 p-4 sm:p-8">
+        <div className="pt-2 sm:pt-4">
           <AllTransaction transactions={transaction} />
         </div>
       </div>

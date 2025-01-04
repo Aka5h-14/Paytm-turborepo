@@ -2,7 +2,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 import prisma from "@repo/db/client";
-import { p2pInputs } from "@repo/zodtypes/types";
 
 export async function p2pTransfer(to: string, amount: number) {
     const session = await getServerSession(authOptions);
@@ -22,13 +21,6 @@ export async function p2pTransfer(to: string, amount: number) {
         return {
             message: "User not found"
         }
-    }
-
-    //zod
-    const typeCheck  = p2pInputs.safeParse({to , amount });
-    if (!typeCheck.success){
-      console.log(typeCheck.error);
-      return typeCheck.error;
     }
 
 

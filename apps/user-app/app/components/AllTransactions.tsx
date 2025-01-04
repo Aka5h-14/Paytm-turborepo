@@ -24,7 +24,7 @@ export const AllTransaction = ({
   return (
     <Card title="All Transactions">
       <div className="pt-4 overflow-x-auto">
-        <table className="table-auto w-full text-left border-collapse border border-gray-200">
+        <table className="table-auto w-full text-left border-collapse border border-gray-200 text-sm sm:text-base">
           <thead>
             <tr className="bg-gray-100">
               <th className="border border-gray-300 px-4 py-2">Amount</th>
