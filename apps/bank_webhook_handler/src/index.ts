@@ -124,7 +124,7 @@ app.post("/sendEmail", async (req, res): Promise<any> => {
 
 // Route to validate OTP
 app.post("/validateOtp", async (req, res): Promise<any> => {
-    const { otp, id }:{otp:string, id:number} = req.body;
+    const { otp, id }: { otp: string, id: number } = req.body;
 
     try {
         const user = await db.user.findFirst({
@@ -138,7 +138,7 @@ app.post("/validateOtp", async (req, res): Promise<any> => {
 
         // Find the most recent OTP
         const latestOtp = await db.otp.findFirst({
-            where: { userId: id},
+            where: { userId: id },
             orderBy: { createdAt: "desc" },
         });
 
@@ -146,11 +146,27 @@ app.post("/validateOtp", async (req, res): Promise<any> => {
             return res.status(200).json({ success: false, msg: "No OTP found" });
         }
 
+        if (latestOtp.attempts <= 0) {
+            return res.status(200).json({ success: false, msg: "OTP limit exceeded" });
+        }
+
+        await db.otp.update({
+            where: {
+                id: latestOtp.id
+            },
+            data: {
+                attempts: {
+                    decrement: 1
+                }
+            }
+        })
+
         if (latestOtp.code === otp) {
-            await db.user.update({
+            db.user.update({
                 where: { id: id },
                 data: { verified: true },
-            });
+            })
+
             return res.status(200).json({ success: true, msg: "OTP verified successfully" });
         } else {
             return res.status(200).json({ success: false, msg: "Invalid OTP" });
@@ -222,7 +238,7 @@ app.post("/sendEmailPass", async (req, res): Promise<any> => {
 
 // Route to validate OTP password
 app.post("/validateOtpPass", async (req, res): Promise<any> => {
-    const { otp, email , password }:{otp:string, email:string , password:string} = req.body;
+    const { otp, email, password }: { otp: string, email: string, password: string } = req.body;
 
     try {
         const user = await db.user.findFirst({
@@ -236,19 +252,36 @@ app.post("/validateOtpPass", async (req, res): Promise<any> => {
 
         // Find the most recent OTP
         const latestOtp = await db.otp.findFirst({
-            where: { userId: user.id},
+            where: { userId: user.id },
             orderBy: { createdAt: "desc" },
         });
+
 
         if (!latestOtp) {
             return res.status(200).json({ success: false, msg: "No OTP found" });
         }
+
+        if (latestOtp.attempts <= 0) {
+            return res.status(200).json({ success: false, msg: "OTP limit exceeded" });
+        }
+
+        await db.otp.update({
+            where: {
+                id: latestOtp.id
+            },
+            data: {
+                attempts: {
+                    decrement: 1
+                }
+            }
+        })
 
         if (latestOtp.code === otp) {
             await db.user.update({
                 where: { id: user.id },
                 data: { password: password },
             });
+
             return res.status(200).json({ success: true, msg: "Password changed successfully" });
         } else {
             return res.status(200).json({ success: false, msg: "Invalid OTP" });

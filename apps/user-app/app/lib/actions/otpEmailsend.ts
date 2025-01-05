@@ -19,7 +19,7 @@ export async function otpEmailSend() {
       throw new Error("User session is not valid.");
     }
 
-    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/sendEmail", {
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/sendEmail' || "", {
       id: session.user.id
     });
 
@@ -38,7 +38,7 @@ export async function otpEmailValidate(otp: string) {
       throw new Error("User session is not valid.");
     }
 
-    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/validateOtp", {
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/validateOtp' || "", {
       otp: otp,
       id: session.user.id,
     });
@@ -58,7 +58,7 @@ export async function otpEmailSendPass(email : string) {
       throw new Error("No email provided.");
     }
 
-    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/sendEmailPass", {
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/sendEmailPass' || "", {
       email: email
     });
 
@@ -78,7 +78,7 @@ export async function otpEmailValidatePass(otp: string , email : string , passwo
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const res: AxiosResponse<ApiResponse> = await axios.post("http://localhost:3003/validateOtpPass", {
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/validateOtpPass' || "", {
       otp: otp,
       email: email,
       password: hashedPassword

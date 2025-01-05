@@ -35,8 +35,8 @@ const ForgotPass: React.FC = () => {
     try {
       dispatch(changeLoading());
       const res = await otpEmailSendPass(email);
-      setIsOtpSent(true);
       if (res.success) {
+        setIsOtpSent(true);
         dispatch(changeLoading());
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));

@@ -25,26 +25,27 @@ const SignIN = () => {
     const typeCheck = signInInputs.safeParse({ phoneNum, password });
 
     if (!typeCheck.success) {
-      dispatch(changeLoading()); 
-      dispatch(errorTrue()); 
-      const errorMessage = typeCheck.error?.errors[0]?.message || "An error occurred";
-      dispatch(setMessage(errorMessage)); 
-      dispatch(setSeverity("warning")); 
-      return ;
+      dispatch(changeLoading());
+      dispatch(errorTrue());
+      const errorMessage =
+        typeCheck.error?.errors[0]?.message || "An error occurred";
+      dispatch(setMessage(errorMessage));
+      dispatch(setSeverity("warning"));
+      return;
     }
 
     const result = await signIn("credentials", {
       redirect: true,
       phone: phoneNum,
       password: password,
+      callbackUrl: "/",
     });
     dispatch(changeLoading());
-    // if(result?.error){ 
+    // if(result?.error){
     //   dispatch(errorTrue());
     //   dispatch(setMessage(result.error));
     //   dispatch(setSeverity("error"));
     // }
-    
   };
 
   return (
@@ -77,7 +78,7 @@ const SignIN = () => {
               placeholder="Password"
               id="password"
               ref={passwordRef}
-              className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 mb-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               type="button"
@@ -103,18 +104,33 @@ const SignIN = () => {
 
           <span
             onClick={() => router.push("/forgotPass")}
-            className="text-gray-600 pt-2 cursor-pointer hover:text-blue-600"
+            className="text-gray-600 cursor-pointer hover:text-blue-600 text-sm"
           >
             Forgot Password?
           </span>
 
           <button
             type="submit"
-            className="w-full p-3 bg-[#6a51a6] text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full p-3 bg-[#6a51a6] text-white font-semibold rounded-md hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             Login with credentials
           </button>
         </form>
+
+        <div>
+          <div className="my-4 text-gray-500 text-center">OR</div>
+          <button
+            onClick={() => signIn("google", { callbackUrl: "/user/dashboard" , redirect: true })}
+            className="w-full items-center flex justify-center p-2 bg-white text-blue-600 font-medium rounded-md hover:scale-105 transition border-2 border-blue-600 focus:outline-none"
+          >
+            <img
+              src="/google.svg"
+              alt="Google Logo"
+              className="w-8 h-8 my-auto mr-5"
+            />
+            Sign in with Google
+          </button>
+        </div>
 
         <div className="mt-4 text-center">
           <p className="text-gray-600">Don't have an account?</p>

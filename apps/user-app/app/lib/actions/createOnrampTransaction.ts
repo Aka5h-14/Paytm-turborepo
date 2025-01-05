@@ -4,7 +4,6 @@ import prisma from "@repo/db/client";
 import { randomUUID } from "crypto";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
-import { onRampInputs } from "@repo/zodtypes/types";
 
 require('dotenv').config()
 
@@ -45,7 +44,7 @@ export async function createOnRampTransaction(provider: string, amount: number) 
 
     try {
         setTimeout(() => {
-            axios.post("http://localhost:3003/bankWebhook", {
+            axios.post(process.env.BACKEND_URL+'/bankWebhook' || "", {
 
                 token,
                 user_identifier: Number(session?.user?.id),

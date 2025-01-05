@@ -25,6 +25,7 @@ model Otp {
   id         Int      @id @default(autoincrement())
   code       String   // OTP code
   createdAt  DateTime 
+  attempts   Int      @default(3)
   userId     Int      // Foreign key for the User relation
   user       User     @relation(name: "otpRelation",fields: [userId], references: [id])
 }

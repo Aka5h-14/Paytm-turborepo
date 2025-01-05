@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const SECRET = process.env.JWT_SECRET || "secret";
-const Public_path = ['/_next', '/favicon.ico', '/api/auth']
+const Public_path = ['/_next', '/favicon.ico', '/api/auth' , '/google.svg']
 
 export default async function middleware(req: NextRequest) {
 
@@ -25,16 +25,22 @@ export default async function middleware(req: NextRequest) {
     }
 
     if(token){
-        // user is logged in
-        //dont know if verified
+        if(!token.number || token.number==""){
+            if(pathname=="/signup/signupGoogle"){
+                return NextResponse.next();
+            }
+            return NextResponse.redirect(new URL("/signup/signupGoogle", req.url));
+        }
+        //not verified
         if(!token.verified){
             if(pathname==("/signup/signupverify")){
                 return NextResponse.next();
             }
             return NextResponse.redirect(new URL("/signup/signupverify", req.url));
         }
+        // verified
         else{
-            if(pathname=="/api/auth/signin" || pathname.startsWith("/signup") || pathname.startsWith("/forgotPass")){
+            if(pathname=="/api/auth/signin" || pathname=="/signup" || pathname=="/signup/signupverify" || pathname.startsWith("/forgotPass")){
                 return NextResponse.redirect(new URL("/", req.url));
             }
             return NextResponse.next();

@@ -18,13 +18,13 @@ export const Appbar = ({
   return (
     <div className="flex justify-between items-center border-b px-4 py-2">
       <button
-        className="sm:hidden p-2 bg-gray-100 rounded-md shadow-md"
+        className="sm:hidden p-2 bg-gray-100 rounded-md"
         onClick={() => {dispatch(click())}}
       >
         <HamburgerIcon />
       </button>
 
-      <div className="text-lg font-semibold">PayTM</div>
+      <a className="text-lg font-semibold" href="/">PayTM</a>
 
       <div>
         <Button onClick={user ? onSignout : onSignin}>{user ? "Logout" : "Login"}</Button>

@@ -27,6 +27,17 @@ export const signUpInputs = z.object({
 });
 export type SignUpInputsType = z.infer<typeof signUpInputs>;
 
+export const signUpInputsExternal = z.object({
+  phone: z
+    .string()
+    .min(5, { message: "Phone number must be 5 or more numbers long" })
+    .max(10, { message: "Phone number must be less than 11 numbers long" }),
+  password: z
+  .string()
+  .min(8, { message: "Password must be 8 or more characters long" }),
+});
+export type SignUpInputsTypeExternal = z.infer<typeof signUpInputs>;
+
 export const p2pInputs = z.object({
   to: z
     .string()
