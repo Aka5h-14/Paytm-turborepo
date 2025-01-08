@@ -20,7 +20,7 @@ export async function createOnRampTransaction(provider: string, amount: number) 
     //zod
 
     try {
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx : any) => {
             await tx.onRampTransaction.create({
                 data: {
                     provider,

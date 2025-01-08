@@ -32,7 +32,7 @@ async function getOnRampTransactions() {
     take: 10, 
   });
 
-  const allTxns = txns.map((t) => ({
+  const allTxns = txns.map((t:any) => ({
     time: t.startTime,
     amount: t.amount,
     status: t.status,

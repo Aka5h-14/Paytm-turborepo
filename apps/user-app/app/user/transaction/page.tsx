@@ -2,7 +2,6 @@ import { AllTransaction } from "../../components/AllTransactions";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import prisma from "@repo/db/client";
-import { redirect } from 'next/navigation'
 
 async function getAllTxns() {
   const session = await getServerSession(authOptions);
@@ -18,7 +17,7 @@ async function getAllTxns() {
   });
 
   // Map bank transactions to required format
-  const formattedBankTxns = bankTxns.map((t) => ({
+  const formattedBankTxns = bankTxns.map((t:any) => ({
     time: t.startTime,
     amount: t.amount/100,
     status: t.status,
@@ -33,7 +32,7 @@ async function getAllTxns() {
   });
 
   // Map P2P transactions to required format
-  const formattedP2PTxns = p2pTxns.map((t) =>
+  const formattedP2PTxns = p2pTxns.map((t:any) =>
     t.fromUserId === userId
       ? {
           time: t.timestamp,

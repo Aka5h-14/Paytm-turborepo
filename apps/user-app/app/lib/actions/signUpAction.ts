@@ -27,7 +27,7 @@ export async function signUpAction({
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const [newUser, balance] = await prisma.$transaction(async (tx) => {
+        const [newUser, balance] = await prisma.$transaction(async (tx: any) => {
             const newUser = await tx.user.create({
                 data: {
                     name,

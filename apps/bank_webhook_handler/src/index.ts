@@ -309,6 +309,8 @@ cron.schedule("0 0 * * *", async () => { // run everyday at 12am
     }
 });
 
+module.exports=app;
+
 
 app.listen(process.env.PORT || 3003, () => {
     console.log("Server is running on port 3003");

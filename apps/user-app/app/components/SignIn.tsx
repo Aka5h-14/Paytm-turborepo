@@ -7,6 +7,7 @@ import { signInInputs } from "@repo/zodtypes/types";
 import { useAppDispatch } from "@repo/store/hooks";
 import { changeLoading } from "@repo/store/LoadingSlice";
 import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
+import Image from "next/image";
 
 const SignIN = () => {
   const dispatch = useAppDispatch();
@@ -123,7 +124,9 @@ const SignIN = () => {
             onClick={() => signIn("google", { callbackUrl: "/user/dashboard" , redirect: true })}
             className="w-full items-center flex justify-center p-2 bg-white text-blue-600 font-medium rounded-md hover:scale-105 transition border-2 border-blue-600 focus:outline-none"
           >
-            <img
+            <Image
+            width={8}
+            height={8}
               src="/google.svg"
               alt="Google Logo"
               className="w-8 h-8 my-auto mr-5"
