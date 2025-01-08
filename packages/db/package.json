@@ -8,6 +8,9 @@
     "devDependencies": {
         "prisma": "^6.1.0"
     },
+    "scripts": {
+    "build": "npx prisma generate"
+  },
     "exports": {
         "./client": "./index.ts"
     }
