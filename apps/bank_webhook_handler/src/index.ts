@@ -10,7 +10,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const app = express();
 app.use(express.json())
 
-app.post("/bankWebhook", async (req, res) => {
+app.post("/exp/bankWebhook", async (req, res) => {
     //TODO: Add zod validation here?
     // zod done @ backend
 
@@ -65,7 +65,7 @@ app.post("/bankWebhook", async (req, res) => {
 
 
 // Route to send OTP email
-app.post("/sendEmail", async (req, res): Promise<any> => {
+app.post("/exp/sendEmail", async (req, res): Promise<any> => {
     const id: number = req.body.id;
     const otpLimit = 5;
 
@@ -123,7 +123,7 @@ app.post("/sendEmail", async (req, res): Promise<any> => {
 });
 
 // Route to validate OTP
-app.post("/validateOtp", async (req, res): Promise<any> => {
+app.post("/exp/validateOtp", async (req, res): Promise<any> => {
     const { otp, id }: { otp: string, id: number } = req.body;
 
     try {
@@ -178,7 +178,7 @@ app.post("/validateOtp", async (req, res): Promise<any> => {
 });
 
 // Route to send OTP email for password reset
-app.post("/sendEmailPass", async (req, res): Promise<any> => {
+app.post("/exp/sendEmailPass", async (req, res): Promise<any> => {
     const email: string = req.body.email;
     const otpLimit = 5;
 
@@ -237,7 +237,7 @@ app.post("/sendEmailPass", async (req, res): Promise<any> => {
 });
 
 // Route to validate OTP password
-app.post("/validateOtpPass", async (req, res): Promise<any> => {
+app.post("/exp/validateOtpPass", async (req, res): Promise<any> => {
     const { otp, email, password }: { otp: string, email: string, password: string } = req.body;
 
     try {
