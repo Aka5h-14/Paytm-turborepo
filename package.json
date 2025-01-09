@@ -2,7 +2,9 @@
   "name": "paytm_repo",
   "private": true,
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo run build",
+    "build:apps": "turbo run build --filter=./apps/*",
+    "build:packages": "turbo run build --filter=./packages/*",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
