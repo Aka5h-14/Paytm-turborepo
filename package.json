@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:apps": "turbo run build --filter=./apps/*",
+    "build:specific-apps": "turbo run build --filter=./apps/user-app --filter=./apps/bank_webhook_handler",
     "build:packages": "turbo run build --filter=./packages/*",
     "dev": "turbo dev",
     "lint": "turbo lint",
@@ -38,6 +39,7 @@
     "node-cron": "^3.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "user": "^1.0.0"
   }
 }
