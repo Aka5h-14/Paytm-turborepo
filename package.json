@@ -6,7 +6,7 @@
     "build:apps": "turbo run build --filter=./apps/*",
     "build:user": "turbo run build --filter=./apps/user-app",
     "build:bank": "turbo run build --filter=./apps/bank_webhook_handler",
-    "build:packages": "npm install -g typescript && turbo run build --filter=./packages/*",
+    "build:packages": "turbo run build --filter=./packages/*",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
