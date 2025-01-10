@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AppbarClient } from "./components/AppbarClient";
 import { Providers } from "../provider";
-import Loader  from "@repo/ui/loader";
-import AutohideSnackbar from "@repo/ui/snackbar";
+import {Loader} from "@repo/ui";
+import {AutohideSnackbar} from "@repo/ui";
 
 const inter = Inter({ subsets: ["latin"] });
 

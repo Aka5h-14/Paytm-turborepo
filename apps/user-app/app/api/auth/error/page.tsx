@@ -1,4 +1,4 @@
-import ErrorComponent from "@repo/ui/errorPage";
+import { ErrorComponent } from "@repo/ui";
 
 export default function Error(){
     return <div>

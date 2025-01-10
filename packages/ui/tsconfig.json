@@ -1,13 +1,13 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
-    "moduleResolution": "node",
     "target": "ES6",
-    "module": "ESNext",
-    "jsx": "react-jsx",
+    "module": "NodeNext",
+    "jsx": "react",
     "strict": true,
     "declaration": true,
     "esModuleInterop": true,
+    "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "outDir": "dist",
     "rootDir": "src"

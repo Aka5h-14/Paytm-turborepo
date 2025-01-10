@@ -1,10 +1,10 @@
-export * from './components/Button';
+export { default as Button } from './components/Button';
 export * from './components/Card';
 export * from './components/TextInput';
 export * from './components/Select';
 export * from './components/Center';
 export * from './components/Code';
-export * from './components/Appbar';
-export * from './components/ErrorPage';
-export * from './components/Loader';
-export * from './components/SnackBar';
+export { default as Appbar } from './components/Appbar';
+export { default as ErrorComponent } from './components/ErrorPage';
+export { default as Loader } from './components/Loader';
+export { default as AutohideSnackbar } from './components/SnackBar';

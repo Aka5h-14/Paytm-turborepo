@@ -1,7 +1,7 @@
 
 import { click } from "@repo/store/HamburgerSlice";
 import { useAppDispatch, useAppSelector } from "@repo/store/hooks";
-import { Button } from "./Button";
+import  Button  from "./Button";
 
 interface AppbarProps {
   user?: { name?: string | null };
@@ -9,11 +9,11 @@ interface AppbarProps {
   onSignout: () => void;
 }
 
-export const Appbar = ({ 
+export default function AppBar({ 
   user, onSignin, onSignout 
-}: AppbarProps) => {
+}: AppbarProps) {
 
-  const hamburger = useAppSelector((state) => state.hamburger.value);
+  const hamburger = useAppSelector((state:any) => state.hamburger.value);
   const dispatch = useAppDispatch(); 
 
   return (

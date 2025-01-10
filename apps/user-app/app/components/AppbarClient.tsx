@@ -1,6 +1,6 @@
 "use client";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Appbar } from "@repo/ui/appbar";
+import { Appbar } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import { changeLoading } from "@repo/store/LoadingSlice";
 import { useDispatch } from "react-redux";
