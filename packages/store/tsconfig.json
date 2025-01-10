@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist",
+      "declaration": true,
+      "declarationMap": true,
+      "sourceMap": true,
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "target": "ES2020",
+      "jsx": "react-jsx",
+      "strict": true,
+      "baseUrl": ".",
+      "paths": {
+        "@repo/store/*": ["./*"]
+      }
+    },
+    "include": ["redux/**/*"],
+    "exclude": ["node_modules", "dist"]
+  }
+  
