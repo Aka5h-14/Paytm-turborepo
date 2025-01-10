@@ -1,6 +1,5 @@
 "use client";
-import { Button } from "@repo/ui/button";
-import { Card } from "@repo/ui/card";
+
 import { Center } from "@repo/ui/center";
 import { TextInput } from "@repo/ui/textInput";
 import { useState } from "react";
@@ -8,6 +7,8 @@ import { p2pTransfer } from "../lib/actions/p2pTransfer";
 import { p2pInputs } from "@repo/zodtypes/types";
 import { useAppDispatch } from "@repo/store/hooks";
 import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
+import { Card } from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
 
 export function SendCard() {
   const [number, setNumber] = useState("");

@@ -1,6 +1,5 @@
 "use client";
-import { Button } from "@repo/ui/button";
-import { Card } from "@repo/ui/card";
+
 import { Select } from "@repo/ui/select";
 import { useState } from "react";
 import { TextInput } from "@repo/ui/textInput";
@@ -9,6 +8,8 @@ import { Center } from "@repo/ui/center";
 import { onRampInputs } from "@repo/zodtypes/types";
 import { useAppDispatch } from "@repo/store/hooks";
 import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
+import { Card } from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
 
 const SUPPORTED_BANKS = [
   {
