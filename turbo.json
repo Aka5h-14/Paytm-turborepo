@@ -14,8 +14,8 @@
       "outputs": [
         ".next/**", 
         "!.next/cache/**",
-        "dist/**",
-        ".dist/**"
+        "node_modules/**", 
+        "packages/ui/dist/**"
       ]
     },
     "lint": {
