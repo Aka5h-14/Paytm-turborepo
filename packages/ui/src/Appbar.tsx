@@ -1,6 +1,7 @@
-import { Button } from "./button";
+
 import { click } from "@repo/store/HamburgerSlice";
 import { useAppDispatch, useAppSelector } from "@repo/store/hooks";
+import { Button } from "./Button";
 
 interface AppbarProps {
   user?: { name?: string | null };
