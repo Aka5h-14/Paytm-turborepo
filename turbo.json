@@ -13,9 +13,7 @@
       "dependsOn": ["^build"],
       "outputs": [
         ".next/**", 
-        "!.next/cache/**",
-        "node_modules/**", 
-        "packages/ui/dist/**"
+        "!.next/cache/**"
       ]
     },
     "lint": {

@@ -3,19 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./button": "./dist/Button.js",
-    "./center": "./dist/Center.js",
-    "./select": "./dist/Select.js",
-    "./textInput": "./dist/TextInput.js",
-    "./card": "./dist/Card.js",
-    "./code": "./dist/Code.js",
-    "./appbar": "./dist/Appbar.js",
-    "./errorPage": "./dist/ErrorPage.js",
-    "./loader": "./dist/Loader.js",
-    "./snackbar": "./dist/SnackBar.js"
+    "./button": "./src/Button.tsx",
+    "./center": "./src/Center.tsx",
+    "./select": "./src/Select.tsx",
+    "./textInput": "./src/TextInput.tsx",
+    "./card": "./src/Card.tsx",
+    "./code": "./src/Code.tsx",
+    "./appbar": "./src/Appbar.tsx",
+    "./errorPage": "./src/ErrorPage.tsx",
+    "./loader": "./src/Loader.tsx",
+    "./snackbar": "./src/SnackBar.tsx"
   },
   "scripts": {
-    "build": "tsc -b",
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component"
   },
