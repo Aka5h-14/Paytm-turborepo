@@ -164,9 +164,9 @@ app.post("/exp/validateOtp", async (req, res): Promise<any> => {
         })
 
         if (latestOtp.code === otp) {
-            db.user.update({
+            const updUser = await db.user.update({
                 where: { id: id },
-                data: { verified: true },
+                data: { verified: true }
             })
 
             return res.status(200).json({ success: true, msg: "OTP verified successfully" });
@@ -314,3 +314,5 @@ cron.schedule("0 0 * * *", async () => { // run everyday at 12am
 app.listen(process.env.PORT || 3003, () => {
     console.log("Server is running on port 3003");
 });
+
+module.exports = app;
