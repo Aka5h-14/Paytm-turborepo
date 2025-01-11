@@ -10,8 +10,11 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const app = express();
 app.use(express.json())
 
+app.get("/", (req, res) => {
+    res.send("Paytm Bank Webhook Handler");
+})
+
 app.post("/exp/bankWebhook", async (req, res) => {
-    //TODO: Add zod validation here?
     // zod done @ backend
 
     //TODO: HDFC bank should ideally send us a secret so we know this is sent by them
@@ -62,7 +65,6 @@ app.post("/exp/bankWebhook", async (req, res) => {
     }
 
 })
-
 
 // Route to send OTP email
 app.post("/exp/sendEmail", async (req, res): Promise<any> => {
@@ -308,9 +310,6 @@ cron.schedule("0 0 * * *", async () => { // run everyday at 12am
         console.error("Error during OTP cleanup:", error);
     }
 });
-
-module.exports=app;
-
 
 app.listen(process.env.PORT || 3003, () => {
     console.log("Server is running on port 3003");
