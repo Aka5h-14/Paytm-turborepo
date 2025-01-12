@@ -26,9 +26,9 @@ export const OnRampTransactions = ({
           <div className="flex justify-between" key={index}>
             <div>
               <div
-                className={`text-sm ${t.status === "Processing" ? "text-red-700" : ""}`}
+                className={`text-sm ${t.status === "Processing" || t.status === "Failure" ? "text-red-700" : ""}`}
               >
-                {t.status === "Processing" ? `Pending` : `Received INR`}
+                {t.status === "Processing" ? `Pending` : t.status === "Failure" ? "Failed" : `Received INR`}
               </div>
               <div className="text-slate-600 text-xs">
                 {t.time.toLocaleString()}
