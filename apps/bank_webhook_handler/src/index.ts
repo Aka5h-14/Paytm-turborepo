@@ -295,7 +295,7 @@ app.post("/exp/validateOtpPass", async (req, res): Promise<any> => {
 });
 
 
-cron.schedule("0 0 * * *", async () => { // run everyday at 12am
+cron.schedule("0 0 * * *", async () => { // run everyday at 12:00 AM
     try {
         const cutoffTime = new Date(Date.now() - 15 * 60 * 1000); // 15 minutes ago
         const deleted = await db.otp.deleteMany({
