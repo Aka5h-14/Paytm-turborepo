@@ -14,16 +14,18 @@ export async function otpEmailSend() {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user.id ) {
-        console.log("send session "+JSON.stringify(session?.user))
+    if (!session || !session.user.id) {
+      console.log("send session " + JSON.stringify(session?.user))
       throw new Error("User session is not valid.");
     }
 
-    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/sendEmail' || "", {
-      id: session.user.id
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/sendEmail' || "", {
+      timeout: 10000, data: {
+        id: session.user.id
+      }
     });
 
-    return res.data; 
+    return res.data;
   } catch (error) {
     console.error("Error sending OTP email:", error);
     throw error;
@@ -34,57 +36,63 @@ export async function otpEmailValidate(otp: string) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session  || !session.user.id) {
+    if (!session || !session.user.id) {
       throw new Error("User session is not valid.");
     }
 
-    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/validateOtp' || "", {
-      otp: otp,
-      id: session.user.id,
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/validateOtp' || "", {
+      timeout: 10000, data: {
+        otp: otp,
+        id: session.user.id,
+      }
     });
 
-    return res.data; 
+    return res.data;
   } catch (error) {
     console.error("Error validating OTP:", error);
     throw error;
   }
 }
 
-export async function otpEmailSendPass(email : string) {
+export async function otpEmailSendPass(email: string) {
   try {
 
-    if (!email ) {
-        console.log("No email provided")
+    if (!email) {
+      console.log("No email provided")
       throw new Error("No email provided.");
     }
 
-    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/sendEmailPass' || "", {
-      email: email
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/sendEmailPass' || "", {
+      timeout: 10000, data: {
+        email: email
+      }
     });
 
-    return res.data; 
+    return res.data;
   } catch (error) {
     console.error("Error sending OTP email for Pass:", error);
     throw error;
   }
 }
 
-export async function otpEmailValidatePass(otp: string , email : string , password : string) {
+export async function otpEmailValidatePass(otp: string, email: string, password: string) {
   try {
 
-    if (!email  || !password) {
+    if (!email || !password) {
       throw new Error("Invalid email or password.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL+'/validateOtpPass' || "", {
-      otp: otp,
-      email: email,
-      password: hashedPassword
+    const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/validateOtpPass' || "", {
+      timeout: 10000, data: {
+        otp: otp,
+        email: email,
+        password: hashedPassword
+      }
     });
 
-    return res.data; 
+    return res.data;
   } catch (error) {
     console.error("Error validating OTP:", error);
     throw error;

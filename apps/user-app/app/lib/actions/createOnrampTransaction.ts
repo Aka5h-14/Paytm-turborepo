@@ -20,7 +20,7 @@ export async function createOnRampTransaction(provider: string, amount: number) 
     //zod
 
     try {
-        await prisma.$transaction(async (tx : any) => {
+        await prisma.$transaction(async (tx: any) => {
             await tx.onRampTransaction.create({
                 data: {
                     provider,
@@ -44,14 +44,14 @@ export async function createOnRampTransaction(provider: string, amount: number) 
 
     try {
         setTimeout(() => {
-            axios.post(process.env.BACKEND_URL+'/bankWebhook' || "", {
-
-                token,
-                user_identifier: Number(session?.user?.id),
-                amount: amount * 100
-    
+            axios.post(process.env.BACKEND_URL + '/bankWebhook' || "", {
+                timeout: 10000, data: {
+                    token,
+                    user_identifier: Number(session?.user?.id),
+                    amount: amount * 100
+                }
             })
-        },20000);
+        }, 20000);
     }
     catch (e: any) {
         console.log(e);
