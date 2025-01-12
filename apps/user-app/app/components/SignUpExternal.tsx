@@ -1,19 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { signUpAction } from "../lib/actions/signUpAction";
 import { changeLoading } from "@repo/store/LoadingSlice";
 import { useAppDispatch } from "@repo/store/hooks";
-import { signUpInputs, signUpInputsExternal } from "@repo/zodtypes/types";
+import { signUpInputsExternal } from "@repo/zodtypes/types";
 import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 import { signUpExternal } from "../lib/actions/signUpExternal";
 
 const SignUpExternal = () => {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
+  dispatch(changeLoading(false));
 
   const phoneRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -21,7 +19,7 @@ const SignUpExternal = () => {
   const handleSignUp = async () => {
 
     try {
-      dispatch(changeLoading());
+      dispatch(changeLoading(true));
       const userData = {
         phone: phoneRef.current?.value || "",
         password: passwordRef.current?.value || "",
@@ -29,7 +27,7 @@ const SignUpExternal = () => {
 
       const typeCheck = signUpInputsExternal.safeParse(userData);
       if (!typeCheck.success) {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         const errorMessage =
           typeCheck.error?.errors[0]?.message || "An error occurred";
@@ -47,15 +45,15 @@ const SignUpExternal = () => {
           redirect: true,
           callbackUrl: "/",
         });
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
       } else {
         dispatch(errorTrue());
         dispatch(setMessage(result.error));
         dispatch(setSeverity("warning"));
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
       }
     } catch (error) {
-      dispatch(changeLoading());
+      dispatch(changeLoading(false));
       if (error instanceof Error) {
         console.error("Error signing in:", error.message);
         throw new Error(error.message);

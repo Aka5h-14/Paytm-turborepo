@@ -10,6 +10,7 @@ import { useAppDispatch } from "@repo/store/hooks";
 import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 import { Card } from "@repo/ui";
 import { Button } from "@repo/ui";
+import { changeLoading } from "@repo/store/LoadingSlice";
 
 const SUPPORTED_BANKS = [
   {
@@ -35,7 +36,7 @@ export const AddMoney = () => {
       <Card title="Add Money">
         <div className="w-full">
           <TextInput
-          type="number"
+            type="number"
             label={"Amount"}
             placeholder={"Amount"}
             onChange={(val) => {
@@ -60,6 +61,7 @@ export const AddMoney = () => {
           <div className="flex justify-center pt-4">
             <Button
               onClick={async () => {
+                dispatch(changeLoading(true));
                 const typeCheck = onRampInputs.safeParse({
                   provider,
                   amount: Number(value) * 100,
@@ -76,6 +78,7 @@ export const AddMoney = () => {
                 if (redirectUrl) {
                   window.open(redirectUrl, "_blank");
                 }
+                dispatch(changeLoading(false));
                 window.location.href = window.location.href;
               }}
             >

@@ -1,6 +1,5 @@
 import { Card } from "@repo/ui";
 
-
 export const AllTransaction = ({
   transactions,
 }: {

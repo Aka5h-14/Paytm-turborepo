@@ -5,9 +5,6 @@ import { authOptions } from "../../lib/auth";
 
 async function getDetails() {
   const session = await getServerSession(authOptions);
-  // if (!session) {
-  //   throw new Error("No session found");
-  // } 
 
   const userId = Number(session?.user?.id);
 

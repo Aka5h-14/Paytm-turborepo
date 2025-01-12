@@ -9,6 +9,7 @@ import { useAppDispatch } from "@repo/store/hooks";
 import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 import { Card } from "@repo/ui";
 import { Button } from "@repo/ui";
+import { changeLoading } from "@repo/store/LoadingSlice";
 
 export function SendCard() {
   const [number, setNumber] = useState("");
@@ -39,10 +40,13 @@ export function SendCard() {
             <div className="pt-4 flex justify-center">
               <Button
                 onClick={async () => {
+                  dispatch(changeLoading(true));
+
                   const typeCheck = p2pInputs.safeParse({
                     to: number,
                     amount: Number(amount) * 100,
                   });
+
                   if (!typeCheck.success) {
                     dispatch(errorTrue());
                     const errorMessage =
@@ -53,12 +57,14 @@ export function SendCard() {
                     return;
                   }
                   const res = await p2pTransfer(number, Number(amount) * 100);
+
                   if (res?.message) {
                     dispatch(errorTrue());
                     dispatch(setMessage(res.message));
                     dispatch(setSeverity("warning"));
                     return;
                   }
+                  dispatch(changeLoading(false));
                   window.location.href = window.location.href;
                 }}
               >

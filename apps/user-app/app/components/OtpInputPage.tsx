@@ -10,6 +10,7 @@ import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 
 const OtpInput = () => {
   const dispatch = useAppDispatch();
+  dispatch(changeLoading(false));
   const router = useRouter();
   const { data: session, update } = useSession();
 
@@ -25,22 +26,22 @@ const OtpInput = () => {
     setLoading(true);
     try {
       // sendOtpEmail(email)
-      dispatch(changeLoading());
+      dispatch(changeLoading(true));
       const res = await otpEmailSend();
       if (res.success) {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("success"));
         setShowOtpInput(true);
       } else {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("warning"));
       }
     } catch (error) {
-      dispatch(changeLoading());
+      dispatch(changeLoading(false));
       dispatch(errorTrue());
       dispatch(setMessage("An error occurred"));
       dispatch(setSeverity("error"));
@@ -96,25 +97,25 @@ const OtpInput = () => {
     }
 
     try {
-      dispatch(changeLoading());
+      dispatch(changeLoading(true));
       setLoading(true);
       const res = await otpEmailValidate(otp);
 
       if (res.success) {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("success"));
         await update({ verified: true });
         router.push("/");
       } else {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("warning"));
       }
     } catch (error) {
-      dispatch(changeLoading());
+      dispatch(changeLoading(false));
       dispatch(errorTrue());
       dispatch(setMessage("Something went wrong. Please try again."));
       dispatch(setSeverity("error"));

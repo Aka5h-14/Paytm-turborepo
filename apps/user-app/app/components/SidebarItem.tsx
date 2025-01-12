@@ -3,7 +3,7 @@ import { click } from "@repo/store/HamburgerSlice";
 import { useAppDispatch } from "@repo/store/hooks";
 import { changeLoading } from "@repo/store/LoadingSlice";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useTransition } from "react";
 
 export const SidebarItem = ({
   href,
@@ -16,18 +16,24 @@ export const SidebarItem = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
   const selected = pathname === href;
   const dispatch = useAppDispatch();
 
-  const handleClick = async () => {
-    dispatch(changeLoading()); // Start loading
+  const handleClick = () => {
+    dispatch(changeLoading(true)); // Start loading
     dispatch(click()); // Close sidebar
 
-    router.push(href);
-    setTimeout(()=>{
-      dispatch(changeLoading()); // Stop loading after navigation
-    },800)
+    startTransition(() => {
+      router.push(href);
+    });
   };
+
+  React.useEffect(() => {
+    if (!isPending) {
+      dispatch(changeLoading(false)); // Stop loading when navigation is complete
+    }
+  }, [isPending, dispatch]);
 
   return (
     <div

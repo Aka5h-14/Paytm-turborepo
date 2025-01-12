@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { signInInputs } from "@repo/zodtypes/types";
@@ -11,6 +11,9 @@ import Image from "next/image";
 
 const SignIN = () => {
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(changeLoading(false));
+  }, [dispatch]);
 
   const phoneRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -18,7 +21,7 @@ const SignIN = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = async () => {
-    dispatch(changeLoading());
+    dispatch(changeLoading(true));
     const phoneNum = phoneRef.current?.value || "";
     const password = passwordRef.current?.value || "";
 
@@ -26,7 +29,7 @@ const SignIN = () => {
     const typeCheck = signInInputs.safeParse({ phoneNum, password });
 
     if (!typeCheck.success) {
-      dispatch(changeLoading());
+      dispatch(changeLoading(false));
       dispatch(errorTrue());
       const errorMessage =
         typeCheck.error?.errors[0]?.message || "An error occurred";
@@ -41,7 +44,7 @@ const SignIN = () => {
       password: password,
       callbackUrl: "/",
     });
-    dispatch(changeLoading());
+    dispatch(changeLoading(false));
     // if(result?.error){
     //   dispatch(errorTrue());
     //   dispatch(setMessage(result.error));
@@ -139,9 +142,8 @@ const SignIN = () => {
           <p className="text-gray-600">Don't have an account?</p>
           <button
             onClick={() => {
-              dispatch(changeLoading());
+              dispatch(changeLoading(true));
               router.push("/signup");
-              dispatch(changeLoading());
             }}
             className="mt-2 text-[#6a51a6] font-semibold hover:text-blue-600 focus:outline-none"
           >

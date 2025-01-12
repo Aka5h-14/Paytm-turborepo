@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice , PayloadAction } from "@reduxjs/toolkit";
 
 export const loadingSlice = createSlice({
   name: "loading",
@@ -6,8 +6,8 @@ export const loadingSlice = createSlice({
     value: false,
   },
   reducers: {
-    changeLoading: (state) => {
-      state.value = !state.value;
+    changeLoading: (state , action: PayloadAction<boolean>) => {
+      state.value = action.payload;
     }
   },
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { signUpAction } from "../lib/actions/signUpAction";
@@ -13,6 +13,9 @@ const SignUP = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(changeLoading(false));
+  }, [dispatch]);
   
   const nameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
@@ -21,8 +24,8 @@ const SignUP = () => {
   
   const handleSignUp = async () => {
 
-    dispatch(changeLoading());
     try {
+      dispatch(changeLoading(true))
       const userData = {
         name: nameRef.current?.value || "",
         phone: phoneRef.current?.value || "",
@@ -32,7 +35,7 @@ const SignUP = () => {
 
       const typeCheck = signUpInputs.safeParse(userData);
       if (!typeCheck.success) {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         const errorMessage =
           typeCheck.error?.errors[0]?.message || "An error occurred";
@@ -49,15 +52,15 @@ const SignUP = () => {
           password: userData.password,
           redirect: true,
         });
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
       } else {
         dispatch(errorTrue());
         dispatch(setMessage(result.error));
         dispatch(setSeverity("error"));
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
       }
     } catch (error) {
-      dispatch(changeLoading());
+      dispatch(changeLoading(false));
       router.push("/signup");
       if (error instanceof Error) {
         console.error("Error signing in:", error.message);
@@ -152,7 +155,10 @@ const SignUP = () => {
         <div className="mt-4 text-center">
           <p className="text-gray-600">Already have an account?</p>
           <button
-            onClick={() => router.push("api/auth/signin")} // Add the path to your sign-in page here
+            onClick={() => {
+              dispatch(changeLoading(true));
+              router.push("api/auth/signin")
+            }} // Add the path to your sign-in page here
             className="mt-2 text-[#6a51a6] font-semibold hover:text-blue-600 focus:outline-none"
           >
             Login
