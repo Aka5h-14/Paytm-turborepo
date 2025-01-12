@@ -294,6 +294,11 @@ app.post("/exp/validateOtpPass", async (req, res): Promise<any> => {
     }
 });
 
+app.listen(process.env.PORT || 3003, () => {
+    console.log("Server is running on port 3003");
+});
+
+module.exports = app;
 
 cron.schedule("0 0 * * *", async () => { // run everyday at 12:00 AM
     try {
@@ -310,9 +315,3 @@ cron.schedule("0 0 * * *", async () => { // run everyday at 12:00 AM
         console.error("Error during OTP cleanup:", error);
     }
 });
-
-app.listen(process.env.PORT || 3003, () => {
-    console.log("Server is running on port 3003");
-});
-
-module.exports = app;
