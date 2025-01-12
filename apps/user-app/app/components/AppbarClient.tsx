@@ -11,10 +11,9 @@ export function AppbarClient() {
   const dispatch = useDispatch();
 
   const handleSignOut = async () => {
-    dispatch(changeLoading());
+    dispatch(changeLoading(true));
     await signOut({ redirect: false });
     router.push("/api/auth/signin");
-    dispatch(changeLoading());
   }; 
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   otpEmailSendPass,
   otpEmailValidatePass,
@@ -19,6 +19,10 @@ const ForgotPass: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
 
+  useEffect(() => {
+      dispatch(changeLoading(false));
+    }, [dispatch]);
+
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
@@ -33,23 +37,23 @@ const ForgotPass: React.FC = () => {
 
   const sendOtp = async () => {
     try {
-      dispatch(changeLoading());
+      dispatch(changeLoading(true));
       const res = await otpEmailSendPass(email);
       if (res.success) {
         setIsOtpSent(true);
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("success"));
       } else {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("warning"));
       }
       console.log(`Sending OTP to phone number: ${email}`);
     } catch (err) {
-      dispatch(changeLoading());
+      dispatch(changeLoading(false));
       dispatch(errorTrue());
       dispatch(setMessage("An error occurred"));
       dispatch(setSeverity("error"));
@@ -59,22 +63,22 @@ const ForgotPass: React.FC = () => {
 
   const verifyOtp = async () => {
     try {
-      dispatch(changeLoading());
+      dispatch(changeLoading(true));
       const res = await otpEmailValidatePass(otp, email, password);
       if (res.success) {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("success"));
         router.push("/api/auth/signin");
       } else {
-        dispatch(changeLoading());
+        dispatch(changeLoading(false));
         dispatch(errorTrue());
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("warning"));
       }
     } catch (err) {
-      dispatch(changeLoading());
+      dispatch(changeLoading(false));
       dispatch(errorTrue());
       dispatch(setMessage("Something went wrong. Please try again."));
       dispatch(setSeverity("error"));

@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useRef, KeyboardEvent, ClipboardEvent } from "react";
+import {
+  useState,
+  useRef,
+  KeyboardEvent,
+  ClipboardEvent,
+  useEffect,
+} from "react";
 import { otpEmailSend, otpEmailValidate } from "../lib/actions/otpEmailsend";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -10,7 +16,9 @@ import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 
 const OtpInput = () => {
   const dispatch = useAppDispatch();
-  dispatch(changeLoading(false));
+  useEffect(() => {
+    dispatch(changeLoading(false));
+  }, [dispatch]);
   const router = useRouter();
   const { data: session, update } = useSession();
 
@@ -45,7 +53,7 @@ const OtpInput = () => {
       dispatch(errorTrue());
       dispatch(setMessage("An error occurred"));
       dispatch(setSeverity("error"));
-      console.error("Error while sending OTP:",error);
+      console.error("Error while sending OTP:", error);
     } finally {
       setLoading(false);
     }

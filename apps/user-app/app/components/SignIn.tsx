@@ -107,7 +107,10 @@ const SignIN = () => {
           </div>
 
           <span
-            onClick={() => router.push("/forgotPass")}
+            onClick={() => {
+              dispatch(changeLoading(true));
+              router.push("/forgotPass");
+            }}
             className="text-gray-600 cursor-pointer hover:text-blue-600 text-sm"
           >
             Forgot Password?
@@ -124,12 +127,17 @@ const SignIN = () => {
         <div>
           <div className="my-4 text-gray-500 text-center">OR</div>
           <button
-            onClick={() => signIn("google", { callbackUrl: "/user/dashboard" , redirect: true })}
+            onClick={() =>
+              signIn("google", {
+                callbackUrl: "/user/dashboard",
+                redirect: true,
+              })
+            }
             className="w-full items-center flex justify-center p-2 bg-white text-blue-600 font-medium rounded-md hover:scale-105 transition border-2 border-blue-600 focus:outline-none"
           >
             <Image
-            width={8}
-            height={8}
+              width={8}
+              height={8}
               src="/google.svg"
               alt="Google Logo"
               className="w-8 h-8 my-auto mr-5"
