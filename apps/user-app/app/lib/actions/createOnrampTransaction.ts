@@ -45,12 +45,11 @@ export async function createOnRampTransaction(provider: string, amount: number) 
     try {
         setTimeout(() => {
             axios.post(process.env.BACKEND_URL + '/bankWebhook' || "", {
-                timeout: 10000, data: {
                     token,
                     user_identifier: Number(session?.user?.id),
                     amount: amount * 100
                 }
-            })
+            )
         }, 20000);
     }
     catch (e: any) {

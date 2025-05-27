@@ -98,7 +98,7 @@ export const UserDashboard = ({
               {user.Balance[0]?.amount ? user.Balance[0]?.amount / 100 : 0}
             </p>
             <p className="text-gray-700 text-sm sm:text-base">
-              <strong>Locked Balance:</strong> ₹{user.Balance[0]?.locked}
+              <strong>Locked Balance:</strong> ₹{user.Balance[0]?.locked ? user.Balance[0]?.locked / 100 : 0}
             </p>
           </div>
         </div>
