@@ -9,6 +9,7 @@ import { useAppDispatch } from "@repo/store/hooks";
 import { changeLoading } from "@repo/store/LoadingSlice";
 import { errorTrue, setMessage, setSeverity } from "@repo/store/ErrorSlice";
 import { useRouter } from "next/navigation";
+import { signUpInputs } from "@repo/zodtypes/types";
 
 const ForgotPass: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,10 +19,12 @@ const ForgotPass: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-      dispatch(changeLoading(false));
-    }, [dispatch]);
+    setIsClient(true);
+    dispatch(changeLoading(false));
+  }, [dispatch]);
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -36,6 +39,19 @@ const ForgotPass: React.FC = () => {
   };
 
   const sendOtp = async () => {
+    if (!isClient) return;
+    
+    // Validate email using zod
+    const typeCheck = signUpInputs.pick({ email: true }).safeParse({ email });
+    if (!typeCheck.success) {
+      dispatch(changeLoading(false));
+      dispatch(errorTrue());
+      const errorMessage =
+        typeCheck.error?.errors[0]?.message || "Invalid email address";
+      dispatch(setMessage(errorMessage));
+      dispatch(setSeverity("warning"));
+      return;
+    }
     try {
       dispatch(changeLoading(true));
       const res = await otpEmailSendPass(email);
@@ -51,7 +67,6 @@ const ForgotPass: React.FC = () => {
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("warning"));
       }
-      console.log(`Sending OTP to email: ${email}`);
     } catch (err) {
       dispatch(changeLoading(false));
       dispatch(errorTrue());
@@ -62,6 +77,19 @@ const ForgotPass: React.FC = () => {
   };
 
   const verifyOtp = async () => {
+    if (!isClient) return;
+
+    // Validate email and password using zod
+    const typeCheck = signUpInputs.pick({ email: true, password: true }).safeParse({ email, password });
+    if (!typeCheck.success) {
+      dispatch(changeLoading(false));
+      dispatch(errorTrue());
+      const errorMessage =
+        typeCheck.error?.errors[0]?.message || "Invalid input";
+      dispatch(setMessage(errorMessage));
+      dispatch(setSeverity("warning"));
+      return;
+    }
     try {
       dispatch(changeLoading(true));
       const res = await otpEmailValidatePass(otp, email, password);
@@ -85,6 +113,10 @@ const ForgotPass: React.FC = () => {
       console.error("Error while verifying OTP:", err);
     }
   };
+
+  if (!isClient) {
+    return null; // or a loading skeleton
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">

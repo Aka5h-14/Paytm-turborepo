@@ -1,5 +1,7 @@
-import { Card } from "@repo/ui";
+"use client";
 
+import { Card } from "@repo/ui";
+import { useState, useEffect } from "react";
 
 // User type
 interface User {
@@ -8,6 +10,12 @@ interface User {
   name?: string | null;
   email?: string | null;
 }
+
+// Helper function for consistent date formatting
+const formatDate = (date: Date) => {
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+};
 
 export const UserDashboard = ({
   user,
@@ -48,6 +56,16 @@ export const UserDashboard = ({
     }[];
   } & (User | null);
 }) => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   if (!user) {
     return (
       <>
@@ -57,11 +75,10 @@ export const UserDashboard = ({
       </>
     );
   }
+
   return (
-    
     <div>
       <div className="p-2 sm:p-8 w-full bg-gray-50 min-h-screen">
-
         <div className="bg-white shadow rounded-lg p-2 sm:p-6">
           <h2 className="text-xl text-[#6a51a6] font-semibold mb-4">User Overview</h2>
           <p className="text-gray-700 text-sm sm:text-base">
@@ -106,7 +123,7 @@ export const UserDashboard = ({
                   </td>
                   <td className="border border-gray-200 p-2">{txn.status}</td>
                   <td className="border border-gray-200 p-2">
-                    {new Date(txn.startTime).toLocaleString()}
+                    {formatDate(txn.startTime)}
                   </td>
                 </tr>
               ))}
@@ -117,7 +134,7 @@ export const UserDashboard = ({
         <div className="mt-6 overflow-x-auto bg-white shadow rounded-lg p-2 sm:p-6">
           <h3 className="text-xl text-[#6a51a6] font-semibold mb-4">P2P Transfers</h3>
 
-          <h4 className="text-lg  font-medium mb-2">Sent Transfers</h4>
+          <h4 className="text-lg font-medium mb-2">Sent Transfers</h4>
           <table className="table-auto w-full border-collapse border border-gray-200 mb-6 text-sm sm:text-base">
             <thead>
               <tr className="bg-gray-100 text-left">
@@ -134,7 +151,7 @@ export const UserDashboard = ({
                   </td>
                   <td className="border border-gray-200 p-2">{txn.toUser?.number}</td>
                   <td className="border border-gray-200 p-2">
-                    {new Date(txn.timestamp).toLocaleString()}
+                    {formatDate(txn.timestamp)}
                   </td>
                 </tr>
               ))}
@@ -160,7 +177,7 @@ export const UserDashboard = ({
                     {txn.fromUser?.number}
                   </td>
                   <td className="border border-gray-200 p-2">
-                    {new Date(txn.timestamp).toLocaleString()}
+                    {formatDate(txn.timestamp)}
                   </td>
                 </tr>
               ))}
