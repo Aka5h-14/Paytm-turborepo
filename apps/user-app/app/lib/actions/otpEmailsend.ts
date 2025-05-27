@@ -20,10 +20,9 @@ export async function otpEmailSend() {
     }
 
     const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/sendEmail' || "", {
-      timeout: 10000, data: {
-        id: session.user.id
-      }
-    });
+      id: session.user.id
+    }
+    );
 
     return res.data;
   } catch (error) {
@@ -41,11 +40,10 @@ export async function otpEmailValidate(otp: string) {
     }
 
     const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/validateOtp' || "", {
-      timeout: 10000, data: {
-        otp: otp,
-        id: session.user.id,
-      }
-    });
+      otp: otp,
+      id: session.user.id,
+    }
+    );
 
     return res.data;
   } catch (error) {
@@ -63,10 +61,9 @@ export async function otpEmailSendPass(email: string) {
     }
 
     const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/sendEmailPass' || "", {
-      timeout: 10000, data: {
-        email: email
-      }
-    });
+      email: email
+    }
+    );
 
     return res.data;
   } catch (error) {
@@ -85,12 +82,11 @@ export async function otpEmailValidatePass(otp: string, email: string, password:
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const res: AxiosResponse<ApiResponse> = await axios.post(process.env.BACKEND_URL + '/validateOtpPass' || "", {
-      timeout: 10000, data: {
-        otp: otp,
-        email: email,
-        password: hashedPassword
-      }
-    });
+      otp: otp,
+      email: email,
+      password: hashedPassword
+    }
+    );
 
     return res.data;
   } catch (error) {

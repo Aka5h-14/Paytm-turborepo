@@ -51,7 +51,7 @@ const ForgotPass: React.FC = () => {
         dispatch(setMessage(res.msg));
         dispatch(setSeverity("warning"));
       }
-      console.log(`Sending OTP to phone number: ${email}`);
+      console.log(`Sending OTP to email: ${email}`);
     } catch (err) {
       dispatch(changeLoading(false));
       dispatch(errorTrue());
