@@ -1,11 +1,9 @@
 "use server";
 
 import SignIN from "../../../components/SignIn";
+import axios from "axios";
 
 export default async function SignInPage() {
-      // const session = await getServerSession(authOptions);
-      // if (session?.user.verified) {
-      //   redirect("/user/dashboard");
-      // }
+  axios.get(process.env.BACKEND_URL + '/' || "");
     return <SignIN /> 
 }

@@ -50,7 +50,7 @@ export async function createOnRampTransaction(provider: string, amount: number) 
                     amount: amount * 100
                 }
             )
-        }, 20000);
+        }, 10000);
     }
     catch (e: any) {
         console.log(e);

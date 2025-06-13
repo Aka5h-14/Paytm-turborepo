@@ -10,7 +10,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const app = express();
 app.use(express.json())
 
-app.get("/", (req, res) => {
+app.get("/exp", (req, res) => {
     res.send("Paytm Bank Webhook Handler");
 })
 
